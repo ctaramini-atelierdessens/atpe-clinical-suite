@@ -22,15 +22,34 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
 
   await createTrackedExportLog({ entityType: 'patient', entityId: id, exportType: 'csv', destination: 'download', metadata: { sessions: sessions?.length ?? 0 } })
 
-  const header = ['patient_code','initials','status','session_number','session_date','emotion','body','awareness','dynamic','symbolic','regulation','engagement','clinical_summary']
-  const rows = (sessions ?? []).map((s) => [patient.code, patient.initials ?? '', patient.status, s.session_number, s.session_date, s.emotional_score, s.body_score, s.awareness_score, s.dynamic_score, s.symbolic_score, s.regulation_score, s.engagement_score, s.clinical_summary ?? s.note ?? ''])
-  const csv = [header, ...rows].map((row) => row.map(esc).join(',')).join('
-')
+const header = [
+  'patient_code',
+  'initials',
+  'session_number',
+  'session_date',
+  'emotional_score',
+  'body_score',
+  'awareness_score',
+  'dynamic_score',
+  'symbolic_score',
+  'regulation_score',
+  'engagement_score',
+  'note',
+]
 
-  return new NextResponse(csv, {
-    headers: {
-      'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': `attachment; filename="patient-${patient.code}.csv"`,
-    },
-  })
-}
+const rows = (sessions ?? []).map((s) => [
+  patient.code,
+  patient.initials ?? '',
+  s.session_number ?? '',
+  s.session_date ?? '',
+  s.emotional_score ?? '',
+  s.body_score ?? '',
+  s.awareness_score ?? '',
+  s.dynamic_score ?? '',
+  s.symbolic_score ?? '',
+  s.regulation_score ?? '',
+  s.engagement_score ?? '',
+  s.note ?? '',
+])
+
+const csv = [header, ...rows].map((row) => row.map(esc).join(',')).join('\n')
