@@ -6,8 +6,12 @@ import { canExport } from '@/lib/atpe/rbac'
 
 function esc(value: unknown) {
   const str = String(value ?? '')
-  if (/[",
-]/.test(str)) return `"${str.replace(/"/g, '""')}"`
+  const needsQuotes = /[",\n]/.test(str)
+
+  if (needsQuotes) {
+    return `"${str.replace(/"/g, '""')}"`
+  }
+
   return str
 }
 
