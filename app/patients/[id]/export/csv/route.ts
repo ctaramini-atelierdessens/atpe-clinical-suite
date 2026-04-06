@@ -6,15 +6,9 @@ import { canExport } from '@/lib/atpe/rbac'
 
 function esc(value: unknown) {
   const str = String(value ?? '')
-  const needsQuotes = /[",\n]/.test(str)
-
-  if (needsQuotes) {
-    return `"${str.replace(/"/g, '""')}"`
-  }
-
+  if (/[",\n]/.test(str)) return `"${str.replace(/"/g, '""')}"`
   return str
 }
-
 export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params
   const { supabase, membership } = await getAppContext()
