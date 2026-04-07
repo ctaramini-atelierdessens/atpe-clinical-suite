@@ -118,7 +118,7 @@ const safeEpisode = episode as any
               <p><span className="font-medium text-slate-800">Statut :</span> {safeEpisode.status}</p>
               <p><span className="font-medium text-slate-800">Cadre thÃ©rapeutique :</span> {safeEpisode.therapeutic_frame ?? 'â€”'}</p>
               <p><span className="font-medium text-slate-800">Indication clinique :</span> {safeEpisode.clinical_indication ?? 'â€”'}</p>
-              <p><span className="font-medium text-slate-800">RÃ©sumÃ© objectifs :</span> {episode.objectives_summary ?? 'â€”'}</p>
+              <p><span className="font-medium text-slate-800">RÃ©sumÃ© objectifs :</span> {safeEpisode.objectives_summary ?? 'â€”'}</p>
             </div>
           ) : (
             <p className="text-sm text-slate-500">Aucun Ã©pisode trouvÃ©.</p>
@@ -229,6 +229,7 @@ const safeEpisode = episode as any
     </div>
   )
 }
+
 
 
 
