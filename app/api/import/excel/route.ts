@@ -322,7 +322,7 @@ export async function POST(request: Request) {
           if (error) throw error
           updatedPatients += 1
         } else {
-          const { data, error } = await supabase.from('patients').insert(patientPayload).select('id').single()
+          const { data, error } = await (supabase as any).from('patients').insert(patientPayload as any).select('id').single()
           if (error || !data) throw error ?? new Error('Création patient impossible')
           patientId = data.id
           createdPatients += 1
@@ -562,5 +562,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error?.message ?? 'Erreur serveur import Excel.' }, { status: 500 })
   }
 }
+
 
 
