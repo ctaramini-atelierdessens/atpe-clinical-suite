@@ -1,4 +1,4 @@
-import { ExcelImportPanel } from '@/components/excel-import-panel'
+ï»¿import { ExcelImportPanel } from '@/components/excel-import-panel'
 import { getAppContext } from '@/lib/atpe/app-context'
 
 export default async function ExcelImportPage() {
@@ -44,13 +44,13 @@ export default async function ExcelImportPage() {
       <section className="card p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-sm text-slate-500">Import structuré v9</p>
+            <p className="text-sm text-slate-500">Import structurÃ© v9</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-              Import clinique production ? Supabase
+              Import clinique production â†’ Supabase
             </h1>
             <p className="mt-3 max-w-4xl text-sm text-slate-500">
-              Cette version ajoute la sauvegarde des profils de mapping depuis l’interface,
-              un dry run incrémental et une résolution assistée des doublons avant validation finale.
+              Cette version ajoute la sauvegarde des profils de mapping depuis lâ€™interface,
+              un dry run incrÃ©mental et une rÃ©solution assistÃ©e des doublons avant validation finale.
             </p>
           </div>
         </div>
