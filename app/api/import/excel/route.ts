@@ -318,7 +318,7 @@ export async function POST(request: Request) {
 
         let patientId = existingPatient?.id
         if (existingPatient?.id) {
-          const { error } = await supabase.from('patients').update(patientPayload).eq('id', existingPatient.id)
+          const { error } = await (supabase as any).from('patients').update(patientPayload as any).eq('id', existingPatient.id)
           if (error) throw error
           updatedPatients += 1
         } else {
@@ -562,4 +562,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error?.message ?? 'Erreur serveur import Excel.' }, { status: 500 })
   }
 }
+
 
