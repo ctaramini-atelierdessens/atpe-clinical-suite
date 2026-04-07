@@ -76,7 +76,7 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
   return new NextResponse(csv, {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
-      ''Content-Disposition': `attachment; filename="patient-${id}.csv"`,
+'Content-Disposition': `attachment; filename="patient-${id}.csv"`,
     },
   })
 }
