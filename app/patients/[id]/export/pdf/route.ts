@@ -72,7 +72,7 @@ const safePatient = patient as any
   y -= 8
   write('Timeline clinique multi-sÃ©ances', { size: 15, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
 
-  for (const session of sessions ?? []) {
+  for (const session of ((sessions ?? []) as any[])) {
     write(`SÃ©ance ${session.session_number} â€” ${session.session_date}`, { size: 12, bold: true, gap: 4 })
     write(`Cadre ${session.setting_type} Â· MÃ©diation ${session.mediation_type} Â· QualitÃ© du cadre ${session.frame_quality}`, { size: 10, color: [0.3, 0.35, 0.45], gap: 4 })
     write(`Ã‰motion ${session.emotional_score}/10 Â· Corps ${session.body_score}/10 Â· Conscience ${session.awareness_score}/10 Â· Dynamique ${session.dynamic_score}/10 Â· Symbolique ${session.symbolic_score}/10 Â· RÃ©gulation ${session.regulation_score}/10 Â· Engagement ${session.engagement_score}/10`, { size: 10, gap: 4 })
@@ -91,6 +91,7 @@ const safePatient = patient as any
     },
   })
 }
+
 
 
 
