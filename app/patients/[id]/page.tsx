@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AuditLogList } from '@/components/audit-log-list'
 import { DocumentVaultList } from '@/components/document-vault'
@@ -60,10 +60,10 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
 
   const [{ data: goals }, { data: noteVersions }, { data: signatures }] = await Promise.all([
     episode
-      ? supabase.from('therapy_goals').select('*').eq('episode_id', episode.id).is('deleted_at', null).order('created_at', { ascending: false })
+      ? supabase.from('therapy_goals').select('*').eq('episode_id', (episode as any).id).is('deleted_at', null).order('created_at', { ascending: false })
       : Promise.resolve({ data: [] as any[] }),
     sessions?.length
-      ? supabase.from('session_note_versions').select('*').in('session_id', sessions.map((session) => session.id)).order('version_number', { ascending: false })
+      ? supabase.from('session_note_versions').select('*').in('session_id', ((sessions ?? []) as any[]).map((session: any) => session.id)).order('version_number', { ascending: false })
       : Promise.resolve({ data: [] as any[] }),
     consents?.length
       ? supabase.from('consent_signatures').select('*').in('consent_id', consents.map((consent) => consent.id)).order('signed_at', { ascending: false })
@@ -93,13 +93,13 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm text-slate-500">Dossier patient</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight">{patient.code}</h1>
             <p className="mt-3 text-sm text-slate-500">
-              Statut : {patient.status} · Initiales : {patient.initials ?? '—'} · Premier contact : {patient.first_contact_on ?? '—'}
+              Statut : {patient.status} Â· Initiales : {patient.initials ?? 'â€”'} Â· Premier contact : {patient.first_contact_on ?? 'â€”'}
             </p>
-            {patient.deleted_at ? <p className="mt-2 text-sm font-medium text-rose-700">Dossier archivé le {new Date(patient.deleted_at).toLocaleString('fr-FR')}</p> : null}
+            {patient.deleted_at ? <p className="mt-2 text-sm font-medium text-rose-700">Dossier archivÃ© le {new Date(patient.deleted_at).toLocaleString('fr-FR')}</p> : null}
           </div>
           <div className="flex flex-wrap gap-2">
-            {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/edit`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Éditer patient</Link> : null}
-            {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/sessions/new`} className="rounded-2xl bg-brand-600 px-4 py-2 text-sm font-medium text-white">Nouvelle séance</Link> : null}
+            {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/edit`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Ã‰diter patient</Link> : null}
+            {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/sessions/new`} className="rounded-2xl bg-brand-600 px-4 py-2 text-sm font-medium text-white">Nouvelle sÃ©ance</Link> : null}
             <Link href={`/patients/${id}/consents`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Consentements</Link>
             <Link href={`/patients/${id}/goals`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Objectifs</Link>
             <Link href={`/patients/${id}/documents`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Coffre documentaire</Link>
@@ -109,21 +109,21 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
       </section>
 
       <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-        <SectionCard title="Épisode thérapeutique" description="Vue synthétique du suivi principal.">
+        <SectionCard title="Ã‰pisode thÃ©rapeutique" description="Vue synthÃ©tique du suivi principal.">
           {episode ? (
             <div className="space-y-3 text-sm text-slate-600">
-              <p><span className="font-medium text-slate-800">Libellé :</span> {episode.episode_label}</p>
+              <p><span className="font-medium text-slate-800">LibellÃ© :</span> {episode.episode_label}</p>
               <p><span className="font-medium text-slate-800">Statut :</span> {episode.status}</p>
-              <p><span className="font-medium text-slate-800">Cadre thérapeutique :</span> {episode.therapeutic_frame ?? '—'}</p>
-              <p><span className="font-medium text-slate-800">Indication clinique :</span> {episode.clinical_indication ?? '—'}</p>
-              <p><span className="font-medium text-slate-800">Résumé objectifs :</span> {episode.objectives_summary ?? '—'}</p>
+              <p><span className="font-medium text-slate-800">Cadre thÃ©rapeutique :</span> {episode.therapeutic_frame ?? 'â€”'}</p>
+              <p><span className="font-medium text-slate-800">Indication clinique :</span> {episode.clinical_indication ?? 'â€”'}</p>
+              <p><span className="font-medium text-slate-800">RÃ©sumÃ© objectifs :</span> {episode.objectives_summary ?? 'â€”'}</p>
             </div>
           ) : (
-            <p className="text-sm text-slate-500">Aucun épisode trouvé.</p>
+            <p className="text-sm text-slate-500">Aucun Ã©pisode trouvÃ©.</p>
           )}
         </SectionCard>
 
-        <SectionCard title="Consentements" description="États courants visibles dans le dossier." actions={<Link href={`/patients/${id}/consents`} className="text-sm font-medium text-brand-700">Gérer</Link>}>
+        <SectionCard title="Consentements" description="Ã‰tats courants visibles dans le dossier." actions={<Link href={`/patients/${id}/consents`} className="text-sm font-medium text-brand-700">GÃ©rer</Link>}>
           <div className="space-y-3">
             {(consents ?? []).slice(0, 4).map((consent) => (
               <div key={consent.id} className="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm">
@@ -132,12 +132,12 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
               </div>
             ))}
             {!consents?.length ? <p className="text-sm text-slate-500">Aucun consentement saisi.</p> : null}
-            {!!signatures?.length ? <p className="text-xs text-slate-500">{signatures.length} signature(s) liées aux consentements.</p> : null}
+            {!!signatures?.length ? <p className="text-xs text-slate-500">{signatures.length} signature(s) liÃ©es aux consentements.</p> : null}
           </div>
         </SectionCard>
       </div>
 
-      <SectionCard title="Objectifs thérapeutiques" description="Création et édition écran par écran." actions={<Link href={`/patients/${id}/goals`} className="text-sm font-medium text-brand-700">Gérer</Link>}>
+      <SectionCard title="Objectifs thÃ©rapeutiques" description="CrÃ©ation et Ã©dition Ã©cran par Ã©cran." actions={<Link href={`/patients/${id}/goals`} className="text-sm font-medium text-brand-700">GÃ©rer</Link>}>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {(goals ?? []).map((goal) => (
             <div key={goal.id} className="rounded-2xl border border-slate-200 p-4">
@@ -145,7 +145,7 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
                 <h3 className="font-semibold text-slate-900">{goal.title}</h3>
                 <span className="badge bg-slate-100 text-slate-700">{goal.status}</span>
               </div>
-              <p className="mt-2 text-sm text-slate-500">Priorité : {goal.priority}</p>
+              <p className="mt-2 text-sm text-slate-500">PrioritÃ© : {goal.priority}</p>
               {goal.description ? <p className="mt-3 text-sm text-slate-600">{goal.description}</p> : null}
             </div>
           ))}
@@ -153,7 +153,7 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
         </div>
       </SectionCard>
 
-      <SectionCard title="Séances" description="Table opérationnelle avec édition, versions de notes et accès aux exports serveur.">
+      <SectionCard title="SÃ©ances" description="Table opÃ©rationnelle avec Ã©dition, versions de notes et accÃ¨s aux exports serveur.">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead className="bg-slate-50 text-left text-slate-500">
@@ -161,7 +161,7 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
                 <th className="px-5 py-3 font-medium">#</th>
                 <th className="px-5 py-3 font-medium">Date</th>
                 <th className="px-5 py-3 font-medium">Scores</th>
-                <th className="px-5 py-3 font-medium">Résumé</th>
+                <th className="px-5 py-3 font-medium">RÃ©sumÃ©</th>
                 <th className="px-5 py-3 font-medium">Versions</th>
                 <th className="px-5 py-3 font-medium"></th>
               </tr>
@@ -182,16 +182,16 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
                       {scoreBadge(session.engagement_score)}
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-slate-600">{session.clinical_summary ?? session.note ?? '—'}</td>
+                  <td className="px-5 py-4 text-slate-600">{session.clinical_summary ?? session.note ?? 'â€”'}</td>
                   <td className="px-5 py-4 text-slate-600">{versionsBySession?.[session.id]?.length ?? 0}</td>
                   <td className="px-5 py-4 text-right">
-                    {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/sessions/${session.id}/edit`} className="rounded-2xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700">Éditer</Link> : null}
+                    {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/sessions/${session.id}/edit`} className="rounded-2xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700">Ã‰diter</Link> : null}
                   </td>
                 </tr>
               ))}
               {!sessions?.length ? (
                 <tr>
-                  <td className="px-5 py-6 text-sm text-slate-500" colSpan={6}>Aucune séance enregistrée.</td>
+                  <td className="px-5 py-6 text-sm text-slate-500" colSpan={6}>Aucune sÃ©ance enregistrÃ©e.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -199,16 +199,16 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
         </div>
       </SectionCard>
 
-      <SectionCard title="Timeline clinique multi-séances" description="Lecture chronologique continue du processus thérapeutique avec historique des versions par note clinique.">
+      <SectionCard title="Timeline clinique multi-sÃ©ances" description="Lecture chronologique continue du processus thÃ©rapeutique avec historique des versions par note clinique.">
         <PatientTimeline sessions={(sessions ?? []) as any} versionsBySession={versionsBySession} />
       </SectionCard>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <SectionCard title="Coffre documentaire" description="Pièces versées dans le stockage sécurisé du dossier." actions={<Link href={`/patients/${id}/documents`} className="text-sm font-medium text-brand-700">Voir tout</Link>}>
+        <SectionCard title="Coffre documentaire" description="PiÃ¨ces versÃ©es dans le stockage sÃ©curisÃ© du dossier." actions={<Link href={`/patients/${id}/documents`} className="text-sm font-medium text-brand-700">Voir tout</Link>}>
           <DocumentVaultList items={(documents ?? []) as any} />
         </SectionCard>
 
-        <SectionCard title="Workflow validation superviseur" description="Soumission, revue et décision dans le dossier patient." actions={<Link href="/reviews" className="text-sm font-medium text-brand-700">Tableau global</Link>}>
+        <SectionCard title="Workflow validation superviseur" description="Soumission, revue et dÃ©cision dans le dossier patient." actions={<Link href="/reviews" className="text-sm font-medium text-brand-700">Tableau global</Link>}>
           <div className="space-y-4">
             {canCreateOrEdit(membership?.role) ? <ReviewRequestForm patientId={id} supervisors={(supervisors ?? []) as any} /> : null}
             <ReviewRequestList items={(reviewRequests ?? []) as any} role={membership?.role} patientId={id} />
@@ -217,13 +217,14 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <SectionCard title="Audit log patient" description="Traçabilité visible directement dans le dossier." actions={<Link href="/audit" className="text-sm font-medium text-brand-700">Voir tout</Link>}>
+        <SectionCard title="Audit log patient" description="TraÃ§abilitÃ© visible directement dans le dossier." actions={<Link href="/audit" className="text-sm font-medium text-brand-700">Voir tout</Link>}>
           <AuditLogList items={patientAuditLogs as any} />
         </SectionCard>
-        <SectionCard title="Journal d’accès du dossier" description="Qui a consulté le dossier et sur quel écran.">
+        <SectionCard title="Journal dâ€™accÃ¨s du dossier" description="Qui a consultÃ© le dossier et sur quel Ã©cran.">
           <PatientAccessLogList items={(accessLogs ?? []) as any} />
         </SectionCard>
       </div>
     </div>
   )
 }
+
