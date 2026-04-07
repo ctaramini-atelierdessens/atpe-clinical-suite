@@ -66,7 +66,7 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
       ? supabase.from('session_note_versions').select('*').in('session_id', ((sessions ?? []) as any[]).map((session: any) => session.id)).order('version_number', { ascending: false })
       : Promise.resolve({ data: [] as any[] }),
     consents?.length
-      ? supabase.from('consent_signatures').select('*').in('consent_id', consents.map((consent) => consent.id)).order('signed_at', { ascending: false })
+      ? supabase.from('consent_signatures').select('*').in('consent_id', ((consents ?? []) as any[]).map((consent: any) => consent.id)).order('signed_at', { ascending: false })
       : Promise.resolve({ data: [] as any[] }),
   ])
 
@@ -227,4 +227,5 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
     </div>
   )
 }
+
 
