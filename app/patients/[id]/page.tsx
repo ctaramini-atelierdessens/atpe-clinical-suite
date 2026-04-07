@@ -127,7 +127,7 @@ const safeEpisode = episode as any
 
         <SectionCard title="Consentements" description="Ã‰tats courants visibles dans le dossier." actions={<Link href={`/patients/${id}/consents`} className="text-sm font-medium text-brand-700">GÃ©rer</Link>}>
           <div className="space-y-3">
-            {(consents ?? []).slice(0, 4).map((consent) => (
+            {((consents ?? []) as any[]).slice(0, 4).map((consent: any) => (
               <div key={consent.id} className="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm">
                 <span className="font-medium text-slate-800">{consent.consent_kind}</span>
                 <span className="badge bg-slate-100 text-slate-700">{consent.status}</span>
@@ -229,6 +229,7 @@ const safeEpisode = episode as any
     </div>
   )
 }
+
 
 
 
