@@ -96,7 +96,7 @@ const safePatient = patient as any
             <p className="mt-3 text-sm text-slate-500">
               Statut : {safePatient.status} Â· Initiales : {safePatient.initials ?? 'â€”'} Â· Premier contact : {safePatient.first_contact_on ?? 'â€”'}
             </p>
-            {patient.deleted_at ? <p className="mt-2 text-sm font-medium text-rose-700">Dossier archivÃ© le {new Date(patient.deleted_at).toLocaleString('fr-FR')}</p> : null}
+            {safePatient.deleted_at ? <p className="mt-2 text-sm font-medium text-rose-700">Dossier archivÃ© le {new Date(safePatient.deleted_at).toLocaleString('fr-FR')}</p> : null}
           </div>
           <div className="flex flex-wrap gap-2">
             {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/edit`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Ã‰diter patient</Link> : null}
@@ -228,6 +228,7 @@ const safePatient = patient as any
     </div>
   )
 }
+
 
 
 
