@@ -13,6 +13,7 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
     supabase.from('patient_consents').select('*').eq('patient_id', id).order('recorded_at', { ascending: false }),
   ])
   if (!patient) notFound()
+const safePatient = patient as any
 
   if (organization) {
     await Promise.all([
@@ -49,7 +50,7 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm text-slate-500">Patient</p>
-          <h1 className="text-3xl font-semibold tracking-tight">Consentements â€” {patient.code}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Consentements â€” {safePatient.code}</h1>
         </div>
         <Link href={`/patients/${id}`} className="rounded-2xl border border-slate-300 px-4 py-2 font-medium text-slate-700">
           Retour dossier
@@ -83,5 +84,6 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
     </div>
   )
 }
+
 
 
