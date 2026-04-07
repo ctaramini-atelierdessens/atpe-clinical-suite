@@ -4,10 +4,23 @@ import { getAppContext } from '@/lib/atpe/app-context'
 export default async function ExcelImportPage() {
   const { supabase, organization } = await getAppContext()
 
-  const [{ data: jobs }, { data: rowResults }, { data: mappingProfiles }] = await Promise.all([
-    organization
-      ? supabase.from('import_jobs').select('*').eq('organization_id', organization.id).order('created_at', { ascending: false }).limit(12)
-      : Promise.resolve({ data: [] as any[] }),
+const { data: job, error: jobError } = await (supabase as any)
+  .from('import_jobs')
+  .insert({
+    organization_id: organizationId,
+    uploaded_by: user.id,
+    file_name: file.name,
+    mime_type: file.type,
+    storage_bucket: storageBucket,
+    storage_path: storagePath,
+    status: 'uploaded',
+    row_count: rows.length,
+    summary: {
+      sheetNames,
+      mapping,
+      mode,
+    },
+  } as any)
     organization
       ? supabase.from('import_row_results').select('id, import_job_id, row_number, status, message, patient_id, patient_code').order('created_at', { ascending: false }).limit(100)
       : Promise.resolve({ data: [] as any[] }),
