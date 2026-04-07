@@ -169,7 +169,7 @@ const safeEpisode = episode as any
               </tr>
             </thead>
             <tbody>
-              {(sessions ?? []).map((session) => (
+              {((sessions ?? []) as any[]).map((session: any) => (
                 <tr key={session.id} className="border-t border-slate-100 align-top">
                   <td className="px-5 py-4 font-medium text-slate-800">{session.session_number}</td>
                   <td className="px-5 py-4 text-slate-600">{session.session_date}</td>
@@ -229,6 +229,7 @@ const safeEpisode = episode as any
     </div>
   )
 }
+
 
 
 
