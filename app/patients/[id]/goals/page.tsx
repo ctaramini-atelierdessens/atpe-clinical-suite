@@ -15,7 +15,7 @@ export default async function PatientGoalsPage({ params }: { params: Promise<{ i
   if (!patient) notFound()
 
   const { data: goals } = episode
-    ? await supabase.from('therapy_goals').select('*').eq('episode_id', safeEpisode.id).order('created_at', { ascending: false })
+    ? await supabase.from('therapy_goals').select('*').eq('episode_id', (episode as any).id).order('created_at', { ascending: false })
     : { data: [] as any[] }
 
   return (
@@ -52,6 +52,8 @@ export default async function PatientGoalsPage({ params }: { params: Promise<{ i
     </div>
   )
 }
+
+
 
 
 
