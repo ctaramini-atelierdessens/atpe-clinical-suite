@@ -713,15 +713,6 @@ if (!linked?.patientId || !linked?.episodeId) {
   throw new Error('Patient lié introuvable pour la séance.')
 }
 
-if (!record.patientCode) {
-  throw new Error('Code patient manquant pour le consentement.')
-}
-
-const linked =
-  patientByCode.get(record.patientCode) ??
-  (patientsForLinked ?? []).find((item: any) => item.code === record.patientCode)
-}
-
       const existing = await db
         .from('sessions')
         .select('id')
