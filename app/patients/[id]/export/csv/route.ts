@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+﻿import { NextResponse } from 'next/server'
 import { getAppContext } from '@/lib/atpe/app-context'
 import { createTrackedExportLog } from '@/lib/atpe/actions'
 import { canExport } from '@/lib/atpe/rbac'
@@ -55,10 +55,10 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
     'note',
   ]
 
-  const rows = (sessions ?? []).map((s) => [
-    patient.code,
-    patient.initials ?? '',
-    patient.status ?? '',
+  const rows = ((sessions ?? []) as any[]).map((s: any) => [
+    (patient as any).code,
+    ((patient as any).initials ?? ''),
+    ((patient as any).status ?? ''),
     s.session_number ?? '',
     s.session_date ?? '',
     s.emotional_score ?? '',
