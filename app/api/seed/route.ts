@@ -30,14 +30,13 @@ export async function POST() {
   updated_at: new Date().toISOString(),
 } as any)
 
-  const { data: existingMembership } = await supabase
-    .from('organization_memberships')
-    .select('organization_id, role')
-    .eq('user_id', clinicianId)
-    .limit(1)
-    .maybeSingle()
+  const { data: existingMembership } = await (supabase as any)
+  .from('organization_memberships')
+  .select('organization_id')
+  .eq('user_id', clinicianId)
+  .maybeSingle()
 
-  let organizationId = existingMembership?.organization_id
+let organizationId = existingMembership?.organization_id as string | undefined
 
   if (!organizationId) {
     const organizationName = 'Cabinet ATPE Clinical Suite'
