@@ -23,12 +23,12 @@ export async function POST() {
   const clinicianId = user.id
   const fullName = user.email ?? 'Utilisateur clinique'
 
-  await supabase.from('profiles').upsert({
-    id: clinicianId,
-    full_name: fullName,
-    global_role: 'clinician',
-    updated_at: new Date().toISOString(),
-  })
+  await (supabase as any).from('profiles').upsert({
+  id: clinicianId,
+  full_name: fullName,
+  global_role: 'clinician',
+  updated_at: new Date().toISOString(),
+} as any)
 
   const { data: existingMembership } = await supabase
     .from('organization_memberships')
