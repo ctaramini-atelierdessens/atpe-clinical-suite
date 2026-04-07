@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DocumentUploadForm, DocumentVaultList } from '@/components/document-vault'
 import { SectionCard } from '@/components/section-card'
@@ -14,6 +14,7 @@ export default async function PatientDocumentsPage({ params }: { params: Promise
   ])
 
   if (!patient) notFound()
+const safePatient = patient as any
 
   if (organization) {
     await Promise.all([
@@ -40,7 +41,7 @@ export default async function PatientDocumentsPage({ params }: { params: Promise
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm text-slate-500">Patient</p>
-          <h1 className="text-3xl font-semibold tracking-tight">Coffre documentaire — {patient.code}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Coffre documentaire â€” {safePatient.code}</h1>
         </div>
         <Link href={`/patients/${id}`} className="rounded-2xl border border-slate-300 px-4 py-2 font-medium text-slate-700">
           Retour dossier
@@ -49,9 +50,10 @@ export default async function PatientDocumentsPage({ params }: { params: Promise
 
       <DocumentUploadForm patientId={id} />
 
-      <SectionCard title="Documents du dossier" description="Inventaire des fichiers stockés dans le bucket sécurisé.">
+      <SectionCard title="Documents du dossier" description="Inventaire des fichiers stockÃ©s dans le bucket sÃ©curisÃ©.">
         <DocumentVaultList items={(documents ?? []) as any} />
       </SectionCard>
     </div>
   )
 }
+
