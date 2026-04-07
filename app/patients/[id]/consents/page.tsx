@@ -61,7 +61,7 @@ const safePatient = patient as any
       {firstConsentId ? <DocumentUploadForm patientId={id} consentId={firstConsentId} defaultCategory="consent_signed_attachment" /> : null}
       <SectionCard title="Ã‰tats de consentement" description="Un Ã©tat courant par type de consentement.">
         <div className="grid gap-3 md:grid-cols-2">
-          {(consents ?? []).map((consent) => (
+          {((consents ?? []) as any[]).map((consent: any) => (
             <div key={consent.id} className="rounded-2xl border border-slate-200 p-4">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-medium text-slate-800">{consent.consent_kind}</span>
@@ -84,6 +84,7 @@ const safePatient = patient as any
     </div>
   )
 }
+
 
 
 
