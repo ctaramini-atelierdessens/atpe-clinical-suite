@@ -38,19 +38,15 @@ export async function POST() {
 
 let organizationId = existingMembership?.organization_id as string | undefined
 
-  if (!organizationId) {
-    const organizationName = 'Cabinet ATPE Clinical Suite'
-    const slug = `${slugify(organizationName)}-${clinicianId.slice(0, 8)}`
-
-    const { data: organization, error: organizationError } = await supabase
-      .from('organizations')
-      .insert({
-        name: organizationName,
-        slug,
-        created_by: clinicianId,
-      })
-      .select('id')
-      .single()
+  const { data: organization, error: organizationError } = await (supabase as any)
+  .from('organizations')
+  .insert({
+    name: organizationName,
+    slug,
+    created_by: clinicianId,
+  } as any)
+  .select('id')
+  .single()
 
     if (organizationError || !organization) {
       return NextResponse.json({ error: organizationError?.message ?? 'Erreur création organisation' }, { status: 500 })
