@@ -32,6 +32,7 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
   ])
   if (!patient) return new NextResponse('Not found', { status: 404 })
 const safePatient = patient as any
+  const safeEpisode = episode as any
   await createTrackedExportLog({ entityType: 'patient', entityId: id, exportType: 'pdf', destination: 'server-pdf', metadata: { sessions: sessions?.length ?? 0 } })
 
   const pdf = await PDFDocument.create()
@@ -64,8 +65,8 @@ const safePatient = patient as any
   write(`Export serveur PDF descriptif sans recommandation automatisÃ©e`, { size: 10, color: [0.3, 0.35, 0.45], gap: 10 })
   write(`Initiales: ${safePatient.initials ?? 'â€”'} Â· Statut: ${safePatient.status} Â· Premier contact: ${safePatient.first_contact_on ?? 'â€”'}`, { size: 11, gap: 6 })
   if (episode) {
-    write(`Ã‰pisode: ${episode.episode_label} Â· ${episode.status}`, { size: 11, gap: 6 })
-    if (episode.objectives_summary) write(`Objectifs: ${episode.objectives_summary}`, { size: 11, gap: 6 })
+    write(`Ã‰pisode: ${safeEpisode.episode_label} Â· ${safeEpisode.status}`, { size: 11, gap: 6 })
+    if (safeEpisode.objectives_summary) write(`Objectifs: ${safeEpisode.objectives_summary}`, { size: 11, gap: 6 })
   }
 
   y -= 8
@@ -90,5 +91,6 @@ const safePatient = patient as any
     },
   })
 }
+
 
 
