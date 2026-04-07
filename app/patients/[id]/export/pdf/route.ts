@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+﻿import { NextResponse } from 'next/server'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { getAppContext } from '@/lib/atpe/app-context'
 import { createTrackedExportLog } from '@/lib/atpe/actions'
@@ -31,7 +31,7 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
     supabase.from('therapy_episodes').select('*').eq('patient_id', id).order('opened_on', { ascending: false }).limit(1).maybeSingle(),
   ])
   if (!patient) return new NextResponse('Not found', { status: 404 })
-
+const safePatient = patient as any
   await createTrackedExportLog({ entityType: 'patient', entityId: id, exportType: 'pdf', destination: 'server-pdf', metadata: { sessions: sessions?.length ?? 0 } })
 
   const pdf = await PDFDocument.create()
@@ -60,24 +60,24 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
     }
   }
 
-  write(`Dossier clinique ATPE — ${patient.code}`, { size: 20, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
-  write(`Export serveur PDF descriptif sans recommandation automatisée`, { size: 10, color: [0.3, 0.35, 0.45], gap: 10 })
-  write(`Initiales: ${patient.initials ?? '—'} · Statut: ${patient.status} · Premier contact: ${patient.first_contact_on ?? '—'}`, { size: 11, gap: 6 })
+  write(`Dossier clinique ATPE â€” ${safePatient.code}`, { size: 20, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
+  write(`Export serveur PDF descriptif sans recommandation automatisÃ©e`, { size: 10, color: [0.3, 0.35, 0.45], gap: 10 })
+  write(`Initiales: ${safePatient.initials ?? 'â€”'} Â· Statut: ${safePatient.status} Â· Premier contact: ${patient.first_contact_on ?? 'â€”'}`, { size: 11, gap: 6 })
   if (episode) {
-    write(`Épisode: ${episode.episode_label} · ${episode.status}`, { size: 11, gap: 6 })
+    write(`Ã‰pisode: ${episode.episode_label} Â· ${episode.status}`, { size: 11, gap: 6 })
     if (episode.objectives_summary) write(`Objectifs: ${episode.objectives_summary}`, { size: 11, gap: 6 })
   }
 
   y -= 8
-  write('Timeline clinique multi-séances', { size: 15, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
+  write('Timeline clinique multi-sÃ©ances', { size: 15, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
 
   for (const session of sessions ?? []) {
-    write(`Séance ${session.session_number} — ${session.session_date}`, { size: 12, bold: true, gap: 4 })
-    write(`Cadre ${session.setting_type} · Médiation ${session.mediation_type} · Qualité du cadre ${session.frame_quality}`, { size: 10, color: [0.3, 0.35, 0.45], gap: 4 })
-    write(`Émotion ${session.emotional_score}/10 · Corps ${session.body_score}/10 · Conscience ${session.awareness_score}/10 · Dynamique ${session.dynamic_score}/10 · Symbolique ${session.symbolic_score}/10 · Régulation ${session.regulation_score}/10 · Engagement ${session.engagement_score}/10`, { size: 10, gap: 4 })
-    if (session.clinical_summary) write(`Résumé clinique: ${session.clinical_summary}`, { size: 10, gap: 4 })
+    write(`SÃ©ance ${session.session_number} â€” ${session.session_date}`, { size: 12, bold: true, gap: 4 })
+    write(`Cadre ${session.setting_type} Â· MÃ©diation ${session.mediation_type} Â· QualitÃ© du cadre ${session.frame_quality}`, { size: 10, color: [0.3, 0.35, 0.45], gap: 4 })
+    write(`Ã‰motion ${session.emotional_score}/10 Â· Corps ${session.body_score}/10 Â· Conscience ${session.awareness_score}/10 Â· Dynamique ${session.dynamic_score}/10 Â· Symbolique ${session.symbolic_score}/10 Â· RÃ©gulation ${session.regulation_score}/10 Â· Engagement ${session.engagement_score}/10`, { size: 10, gap: 4 })
+    if (session.clinical_summary) write(`RÃ©sumÃ© clinique: ${session.clinical_summary}`, { size: 10, gap: 4 })
     if (session.note) write(`Note libre: ${session.note}`, { size: 10, gap: 4 })
-    if (session.therapist_hypothesis) write(`Hypothèse thérapeute: ${session.therapist_hypothesis}`, { size: 10, gap: 6 })
+    if (session.therapist_hypothesis) write(`HypothÃ¨se thÃ©rapeute: ${session.therapist_hypothesis}`, { size: 10, gap: 6 })
     y -= 6
   }
 
@@ -85,8 +85,9 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
   return new NextResponse(bytes, {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename="dossier-${patient.code}.pdf"`,
+      'Content-Disposition': `inline; filename="dossier-${safePatient.code}.pdf"`,
       'Cache-Control': 'no-store',
     },
   })
 }
+
