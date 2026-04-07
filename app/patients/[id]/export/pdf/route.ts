@@ -62,7 +62,7 @@ const safePatient = patient as any
 
   write(`Dossier clinique ATPE â€” ${safePatient.code}`, { size: 20, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
   write(`Export serveur PDF descriptif sans recommandation automatisÃ©e`, { size: 10, color: [0.3, 0.35, 0.45], gap: 10 })
-  write(`Initiales: ${safePatient.initials ?? 'â€”'} Â· Statut: ${safePatient.status} Â· Premier contact: ${patient.first_contact_on ?? 'â€”'}`, { size: 11, gap: 6 })
+  write(`Initiales: ${safePatient.initials ?? 'â€”'} Â· Statut: ${safePatient.status} Â· Premier contact: ${safePatient.first_contact_on ?? 'â€”'}`, { size: 11, gap: 6 })
   if (episode) {
     write(`Ã‰pisode: ${episode.episode_label} Â· ${episode.status}`, { size: 11, gap: 6 })
     if (episode.objectives_summary) write(`Objectifs: ${episode.objectives_summary}`, { size: 11, gap: 6 })
@@ -90,4 +90,5 @@ const safePatient = patient as any
     },
   })
 }
+
 
