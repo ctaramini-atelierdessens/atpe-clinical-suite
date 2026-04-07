@@ -42,7 +42,7 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
     supabase.from('patient_documents').select('*').eq('patient_id', id).eq('category', 'consent_signed_attachment').order('created_at', { ascending: false }),
   ])
 
-  const firstConsentId = consents?.[0]?.id ?? null
+  const firstConsentId = ((consents ?? []) as any[])[0]?.id ?? null
 
   return (
     <div className="space-y-6">
@@ -83,4 +83,5 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
     </div>
   )
 }
+
 
