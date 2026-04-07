@@ -27,11 +27,11 @@ export async function GET() {
   })
 
   const header = ['id', 'organization_id', 'patient_id', 'actor_user_id', 'access_scope', 'route', 'accessed_at']
-  const rows = (logs ?? []).map((item) =>
-    [item.id, item.organization_id, item.patient_id, item.actor_user_id ?? '', item.access_scope, item.route, item.accessed_at]
-      .map((value) => `"${String(value ?? '').replaceAll('"', '""')}"`)
-      .join(','),
-  )
+  const rows = ((logs ?? []) as any[]).map((item: any) =>
+  [item.id, item.organization_id, item.patient_id, item.actor_user_id ?? '', item.access_scope]
+    .map((value) => `"${String(value ?? '').replaceAll('"', '""')}"`)
+    .join(','),
+)
 
   return new NextResponse([header.join(','), ...rows].join('\n'), {
     headers: {
