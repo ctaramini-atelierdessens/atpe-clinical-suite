@@ -83,7 +83,8 @@ const safePatient = patient as any
   }
 
   const bytes = await pdf.save()
-  return new NextResponse(bytes, {
+const body = new Uint8Array(bytes).buffer
+return new NextResponse(body, {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `inline; filename="dossier-${safePatient.code}.pdf"`,
