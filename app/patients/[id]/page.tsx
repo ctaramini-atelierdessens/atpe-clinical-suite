@@ -38,6 +38,7 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
 
   if (!patient) notFound()
 const safePatient = patient as any
+const safeEpisode = episode as any
 
   if (organization) {
     await Promise.all([
@@ -113,10 +114,10 @@ const safePatient = patient as any
         <SectionCard title="Ã‰pisode thÃ©rapeutique" description="Vue synthÃ©tique du suivi principal.">
           {episode ? (
             <div className="space-y-3 text-sm text-slate-600">
-              <p><span className="font-medium text-slate-800">LibellÃ© :</span> {episode.episode_label}</p>
-              <p><span className="font-medium text-slate-800">Statut :</span> {episode.status}</p>
-              <p><span className="font-medium text-slate-800">Cadre thÃ©rapeutique :</span> {episode.therapeutic_frame ?? 'â€”'}</p>
-              <p><span className="font-medium text-slate-800">Indication clinique :</span> {episode.clinical_indication ?? 'â€”'}</p>
+              <p><span className="font-medium text-slate-800">LibellÃ© :</span> {safeEpisode.episode_label}</p>
+              <p><span className="font-medium text-slate-800">Statut :</span> {safeEpisode.status}</p>
+              <p><span className="font-medium text-slate-800">Cadre thÃ©rapeutique :</span> {safeEpisode.therapeutic_frame ?? 'â€”'}</p>
+              <p><span className="font-medium text-slate-800">Indication clinique :</span> {safeEpisode.clinical_indication ?? 'â€”'}</p>
               <p><span className="font-medium text-slate-800">RÃ©sumÃ© objectifs :</span> {episode.objectives_summary ?? 'â€”'}</p>
             </div>
           ) : (
@@ -228,6 +229,7 @@ const safePatient = patient as any
     </div>
   )
 }
+
 
 
 
