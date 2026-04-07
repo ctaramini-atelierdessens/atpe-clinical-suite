@@ -340,9 +340,7 @@ export async function POST(request: Request) {
         ).data?.id
 
         if (!episodeId) {
-          const { data, error } = await supabase
-            .from('therapy_episodes')
-            .insert({
+          const { data, error } = await (supabase as any).from('therapy_episodes').insert({
               organization_id: organizationId,
               patient_id: patientId,
               clinician_id: user.id,
@@ -562,6 +560,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error?.message ?? 'Erreur serveur import Excel.' }, { status: 500 })
   }
 }
+
+
 
 
 
