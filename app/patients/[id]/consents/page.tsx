@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DocumentUploadForm, DocumentVaultList } from '@/components/document-vault'
 import { ConsentForm, ConsentSignatureForm, ConsentSignatureList } from '@/components/forms/consent-form'
@@ -34,7 +34,7 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
     ])
   }
 
-  const consentIds = (consents ?? []).map((consent) => consent.id)
+  const consentIds = ((consents ?? []) as any[]).map((consent: any) => consent.id)
   const [{ data: signatures }, { data: documents }] = await Promise.all([
     consentIds.length
       ? supabase.from('consent_signatures').select('*').in('consent_id', consentIds).order('signed_at', { ascending: false })
@@ -49,7 +49,7 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm text-slate-500">Patient</p>
-          <h1 className="text-3xl font-semibold tracking-tight">Consentements — {patient.code}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Consentements â€” {patient.code}</h1>
         </div>
         <Link href={`/patients/${id}`} className="rounded-2xl border border-slate-300 px-4 py-2 font-medium text-slate-700">
           Retour dossier
@@ -58,7 +58,7 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
       <ConsentForm patientId={id} />
       {firstConsentId ? <ConsentSignatureForm patientId={id} consentId={firstConsentId} /> : null}
       {firstConsentId ? <DocumentUploadForm patientId={id} consentId={firstConsentId} defaultCategory="consent_signed_attachment" /> : null}
-      <SectionCard title="États de consentement" description="Un état courant par type de consentement.">
+      <SectionCard title="Ã‰tats de consentement" description="Un Ã©tat courant par type de consentement.">
         <div className="grid gap-3 md:grid-cols-2">
           {(consents ?? []).map((consent) => (
             <div key={consent.id} className="rounded-2xl border border-slate-200 p-4">
@@ -66,7 +66,7 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
                 <span className="font-medium text-slate-800">{consent.consent_kind}</span>
                 <span className="badge bg-slate-100 text-slate-700">{consent.status}</span>
               </div>
-              <p className="mt-2 text-xs text-slate-500">Enregistré le {new Date(consent.recorded_at).toLocaleString('fr-FR')}</p>
+              <p className="mt-2 text-xs text-slate-500">EnregistrÃ© le {new Date(consent.recorded_at).toLocaleString('fr-FR')}</p>
               {consent.expires_at ? <p className="mt-1 text-xs text-slate-500">Expire le {new Date(consent.expires_at).toLocaleString('fr-FR')}</p> : null}
               {consent.note ? <p className="mt-3 text-sm text-slate-600">{consent.note}</p> : null}
             </div>
@@ -74,12 +74,13 @@ export default async function PatientConsentsPage({ params }: { params: Promise<
           {!consents?.length ? <p className="text-sm text-slate-500">Aucun consentement saisi.</p> : null}
         </div>
       </SectionCard>
-      <SectionCard title="Signatures de consentement" description="Trace textuelle ou visuelle des signatures associées.">
+      <SectionCard title="Signatures de consentement" description="Trace textuelle ou visuelle des signatures associÃ©es.">
         <ConsentSignatureList items={(signatures ?? []) as any} />
       </SectionCard>
-      <SectionCard title="Pièces jointes signées" description="Documents sécurisés liés aux consentements et conservés dans le coffre documentaire.">
+      <SectionCard title="PiÃ¨ces jointes signÃ©es" description="Documents sÃ©curisÃ©s liÃ©s aux consentements et conservÃ©s dans le coffre documentaire.">
         <DocumentVaultList items={(documents ?? []) as any} />
       </SectionCard>
     </div>
   )
 }
+
