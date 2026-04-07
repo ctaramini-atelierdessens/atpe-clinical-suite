@@ -252,7 +252,7 @@ export async function POST(request: Request) {
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
     const storagePath = `${organizationId}/${timestamp}-${file.name}`
-    const { data: job, error: jobError } = await supabase
+    const { data: job, error: jobError } = await (supabase as any)
       .from('import_jobs')
       .insert({
         organization_id: organizationId,
@@ -562,3 +562,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error?.message ?? 'Erreur serveur import Excel.' }, { status: 500 })
   }
 }
+
