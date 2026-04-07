@@ -37,6 +37,7 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
   ])
 
   if (!patient) notFound()
+const safePatient = patient as any
 
   if (organization) {
     await Promise.all([
@@ -91,9 +92,9 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-sm text-slate-500">Dossier patient</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight">{patient.code}</h1>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight">{safePatient.code}</h1>
             <p className="mt-3 text-sm text-slate-500">
-              Statut : {patient.status} Â· Initiales : {patient.initials ?? 'â€”'} Â· Premier contact : {patient.first_contact_on ?? 'â€”'}
+              Statut : {safePatient.status} Â· Initiales : {safePatient.initials ?? 'â€”'} Â· Premier contact : {safePatient.first_contact_on ?? 'â€”'}
             </p>
             {patient.deleted_at ? <p className="mt-2 text-sm font-medium text-rose-700">Dossier archivÃ© le {new Date(patient.deleted_at).toLocaleString('fr-FR')}</p> : null}
           </div>
@@ -227,5 +228,6 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
     </div>
   )
 }
+
 
 
