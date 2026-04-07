@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { SectionCard } from '@/components/section-card'
 import { getAppContext } from '@/lib/atpe/app-context'
 import { ReviewRequestList } from '@/components/review-workflow'
@@ -10,7 +10,7 @@ export default async function ReviewsPage() {
     supabase.from('patients').select('id, code'),
   ])
 
-  const patientMap = new Map((patients ?? []).map((patient) => [patient.id, patient.code]))
+  const patientMap = new Map(((patients ?? []) as any[]).map((patient: any) => [patient.id, patient.code]))
 
   return (
     <div className="space-y-6">
@@ -19,14 +19,14 @@ export default async function ReviewsPage() {
         <p className="mt-2 text-sm text-slate-500">Pilotage global des demandes de validation clinique.</p>
       </div>
 
-      <SectionCard title="Workflow en cours" description="Accès superviseur centralisé à l’ensemble des dossiers soumis.">
+      <SectionCard title="Workflow en cours" description="AccÃ¨s superviseur centralisÃ© Ã  lâ€™ensemble des dossiers soumis.">
         <div className="space-y-6">
           {(requests ?? []).map((request) => (
             <div key={request.id} className="rounded-3xl border border-slate-200 p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h2 className="text-lg font-semibold text-slate-900">Patient {patientMap.get(request.patient_id) ?? request.patient_id}</h2>
-                  <p className="text-sm text-slate-500">Session liée : {request.session_id ?? 'non précisée'}</p>
+                  <p className="text-sm text-slate-500">Session liÃ©e : {request.session_id ?? 'non prÃ©cisÃ©e'}</p>
                 </div>
                 <Link href={`/patients/${request.patient_id}`} className="rounded-2xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700">
                   Ouvrir le dossier
@@ -41,3 +41,4 @@ export default async function ReviewsPage() {
     </div>
   )
 }
+
