@@ -50,7 +50,7 @@ const safePatient = patient as any
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm text-slate-500">Patient</p>
-          <h1 className="text-3xl font-semibold tracking-tight">Consentements â€” {safePatient.code}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Consentements â€” {patient.code}</h1>
         </div>
         <Link href={`/patients/${id}`} className="rounded-2xl border border-slate-300 px-4 py-2 font-medium text-slate-700">
           Retour dossier
@@ -61,7 +61,7 @@ const safePatient = patient as any
       {firstConsentId ? <DocumentUploadForm patientId={id} consentId={firstConsentId} defaultCategory="consent_signed_attachment" /> : null}
       <SectionCard title="États de consentement" description="Un état courant par type de consentement.">
         <div className="grid gap-3 md:grid-cols-2">
-          {((consents ?? []) as any[]).map((consent: any) => (
+          {(consents ?? []).map((consent) => (
             <div key={consent.id} className="rounded-2xl border border-slate-200 p-4">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-medium text-slate-800">{consent.consent_kind}</span>
@@ -84,7 +84,5 @@ const safePatient = patient as any
     </div>
   )
 }
-
-
 
 

@@ -97,11 +97,11 @@ const safeEpisode = episode as any
             <p className="mt-3 text-sm text-slate-500">
               Statut : {safePatient.status} Â· Initiales : {safePatient.initials ?? 'â€”'} Â· Premier contact : {safePatient.first_contact_on ?? 'â€”'}
             </p>
-            {safePatient.deleted_at ? <p className="mt-2 text-sm font-medium text-rose-700">Dossier archivÃ© le {new Date(safePatient.deleted_at).toLocaleString('fr-FR')}</p> : null}
+            {safePatient.deleted_at ? <p className="mt-2 text-sm font-medium text-rose-700">Dossier archivé le {new Date(safePatient.deleted_at).toLocaleString('fr-FR')}</p> : null}
           </div>
           <div className="flex flex-wrap gap-2">
-            {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/edit`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Ã‰diter patient</Link> : null}
-            {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/sessions/new`} className="rounded-2xl bg-brand-600 px-4 py-2 text-sm font-medium text-white">Nouvelle sÃ©ance</Link> : null}
+            {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/edit`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Éditer patient</Link> : null}
+            {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/sessions/new`} className="rounded-2xl bg-brand-600 px-4 py-2 text-sm font-medium text-white">Nouvelle séance</Link> : null}
             <Link href={`/patients/${id}/consents`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Consentements</Link>
             <Link href={`/patients/${id}/goals`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Objectifs</Link>
             <Link href={`/patients/${id}/documents`} className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Coffre documentaire</Link>
@@ -111,21 +111,21 @@ const safeEpisode = episode as any
       </section>
 
       <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-        <SectionCard title="Ã‰pisode thÃ©rapeutique" description="Vue synthÃ©tique du suivi principal.">
+        <SectionCard title="Épisode thérapeutique" description="Vue synthétique du suivi principal.">
           {episode ? (
             <div className="space-y-3 text-sm text-slate-600">
-              <p><span className="font-medium text-slate-800">LibellÃ© :</span> {safeEpisode.episode_label}</p>
+              <p><span className="font-medium text-slate-800">Libellé :</span> {safeEpisode.episode_label}</p>
               <p><span className="font-medium text-slate-800">Statut :</span> {safeEpisode.status}</p>
-              <p><span className="font-medium text-slate-800">Cadre thÃ©rapeutique :</span> {safeEpisode.therapeutic_frame ?? 'â€”'}</p>
+              <p><span className="font-medium text-slate-800">Cadre thérapeutique :</span> {safeEpisode.therapeutic_frame ?? 'â€”'}</p>
               <p><span className="font-medium text-slate-800">Indication clinique :</span> {safeEpisode.clinical_indication ?? 'â€”'}</p>
-              <p><span className="font-medium text-slate-800">RÃ©sumÃ© objectifs :</span> {safeEpisode.objectives_summary ?? 'â€”'}</p>
+              <p><span className="font-medium text-slate-800">Résumé objectifs :</span> {safeEpisode.objectives_summary ?? 'â€”'}</p>
             </div>
           ) : (
-            <p className="text-sm text-slate-500">Aucun Ã©pisode trouvÃ©.</p>
+            <p className="text-sm text-slate-500">Aucun épisode trouvé.</p>
           )}
         </SectionCard>
 
-        <SectionCard title="Consentements" description="Ã‰tats courants visibles dans le dossier." actions={<Link href={`/patients/${id}/consents`} className="text-sm font-medium text-brand-700">GÃ©rer</Link>}>
+        <SectionCard title="Consentements" description="États courants visibles dans le dossier." actions={<Link href={`/patients/${id}/consents`} className="text-sm font-medium text-brand-700">Gérer</Link>}>
           <div className="space-y-3">
             {((consents ?? []) as any[]).slice(0, 4).map((consent: any) => (
               <div key={consent.id} className="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm">
@@ -134,12 +134,12 @@ const safeEpisode = episode as any
               </div>
             ))}
             {!consents?.length ? <p className="text-sm text-slate-500">Aucun consentement saisi.</p> : null}
-            {!!signatures?.length ? <p className="text-xs text-slate-500">{signatures.length} signature(s) liÃ©es aux consentements.</p> : null}
+            {!!signatures?.length ? <p className="text-xs text-slate-500">{signatures.length} signature(s) liées aux consentements.</p> : null}
           </div>
         </SectionCard>
       </div>
 
-      <SectionCard title="Objectifs thÃ©rapeutiques" description="CrÃ©ation et Ã©dition Ã©cran par Ã©cran." actions={<Link href={`/patients/${id}/goals`} className="text-sm font-medium text-brand-700">GÃ©rer</Link>}>
+      <SectionCard title="Objectifs thérapeutiques" description="Création et édition écran par écran." actions={<Link href={`/patients/${id}/goals`} className="text-sm font-medium text-brand-700">Gérer</Link>}>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {(goals ?? []).map((goal) => (
             <div key={goal.id} className="rounded-2xl border border-slate-200 p-4">
@@ -147,7 +147,7 @@ const safeEpisode = episode as any
                 <h3 className="font-semibold text-slate-900">{goal.title}</h3>
                 <span className="badge bg-slate-100 text-slate-700">{goal.status}</span>
               </div>
-              <p className="mt-2 text-sm text-slate-500">PrioritÃ© : {goal.priority}</p>
+              <p className="mt-2 text-sm text-slate-500">Priorité : {goal.priority}</p>
               {goal.description ? <p className="mt-3 text-sm text-slate-600">{goal.description}</p> : null}
             </div>
           ))}
@@ -155,7 +155,7 @@ const safeEpisode = episode as any
         </div>
       </SectionCard>
 
-      <SectionCard title="SÃ©ances" description="Table opÃ©rationnelle avec Ã©dition, versions de notes et accÃ¨s aux exports serveur.">
+      <SectionCard title="Séances" description="Table opérationnelle avec édition, versions de notes et accès aux exports serveur.">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead className="bg-slate-50 text-left text-slate-500">
@@ -163,7 +163,7 @@ const safeEpisode = episode as any
                 <th className="px-5 py-3 font-medium">#</th>
                 <th className="px-5 py-3 font-medium">Date</th>
                 <th className="px-5 py-3 font-medium">Scores</th>
-                <th className="px-5 py-3 font-medium">RÃ©sumÃ©</th>
+                <th className="px-5 py-3 font-medium">Résumé</th>
                 <th className="px-5 py-3 font-medium">Versions</th>
                 <th className="px-5 py-3 font-medium"></th>
               </tr>
@@ -187,13 +187,13 @@ const safeEpisode = episode as any
                   <td className="px-5 py-4 text-slate-600">{session.clinical_summary ?? session.note ?? 'â€”'}</td>
                   <td className="px-5 py-4 text-slate-600">{versionsBySession?.[session.id]?.length ?? 0}</td>
                   <td className="px-5 py-4 text-right">
-                    {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/sessions/${session.id}/edit`} className="rounded-2xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700">Ã‰diter</Link> : null}
+                    {canCreateOrEdit(membership?.role) ? <Link href={`/patients/${id}/sessions/${session.id}/edit`} className="rounded-2xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700">Éditer</Link> : null}
                   </td>
                 </tr>
               ))}
               {!sessions?.length ? (
                 <tr>
-                  <td className="px-5 py-6 text-sm text-slate-500" colSpan={6}>Aucune sÃ©ance enregistrÃ©e.</td>
+                  <td className="px-5 py-6 text-sm text-slate-500" colSpan={6}>Aucune séance enregistrée.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -201,16 +201,16 @@ const safeEpisode = episode as any
         </div>
       </SectionCard>
 
-      <SectionCard title="Timeline clinique multi-sÃ©ances" description="Lecture chronologique continue du processus thÃ©rapeutique avec historique des versions par note clinique.">
+      <SectionCard title="Timeline clinique multi-séances" description="Lecture chronologique continue du processus thérapeutique avec historique des versions par note clinique.">
         <PatientTimeline sessions={(sessions ?? []) as any} versionsBySession={versionsBySession} />
       </SectionCard>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <SectionCard title="Coffre documentaire" description="PiÃ¨ces versÃ©es dans le stockage sÃ©curisÃ© du dossier." actions={<Link href={`/patients/${id}/documents`} className="text-sm font-medium text-brand-700">Voir tout</Link>}>
+        <SectionCard title="Coffre documentaire" description="Pièces versées dans le stockage sécurisé du dossier." actions={<Link href={`/patients/${id}/documents`} className="text-sm font-medium text-brand-700">Voir tout</Link>}>
           <DocumentVaultList items={(documents ?? []) as any} />
         </SectionCard>
 
-        <SectionCard title="Workflow validation superviseur" description="Soumission, revue et dÃ©cision dans le dossier patient." actions={<Link href="/reviews" className="text-sm font-medium text-brand-700">Tableau global</Link>}>
+        <SectionCard title="Workflow validation superviseur" description="Soumission, revue et décision dans le dossier patient." actions={<Link href="/reviews" className="text-sm font-medium text-brand-700">Tableau global</Link>}>
           <div className="space-y-4">
             {canCreateOrEdit(membership?.role) ? <ReviewRequestForm patientId={id} supervisors={(supervisors ?? []) as any} /> : null}
             <ReviewRequestList items={(reviewRequests ?? []) as any} role={membership?.role} patientId={id} />
@@ -219,10 +219,10 @@ const safeEpisode = episode as any
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <SectionCard title="Audit log patient" description="TraÃ§abilitÃ© visible directement dans le dossier." actions={<Link href="/audit" className="text-sm font-medium text-brand-700">Voir tout</Link>}>
+        <SectionCard title="Audit log patient" description="TraÃ§abilité visible directement dans le dossier." actions={<Link href="/audit" className="text-sm font-medium text-brand-700">Voir tout</Link>}>
           <AuditLogList items={patientAuditLogs as any} />
         </SectionCard>
-        <SectionCard title="Journal dâ€™accÃ¨s du dossier" description="Qui a consultÃ© le dossier et sur quel Ã©cran.">
+        <SectionCard title="Journal dâ€™accès du dossier" description="Qui a consulté le dossier et sur quel écran.">
           <PatientAccessLogList items={(accessLogs ?? []) as any} />
         </SectionCard>
       </div>

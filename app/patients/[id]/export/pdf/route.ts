@@ -62,23 +62,23 @@ const safePatient = patient as any
   }
 
   write(`Dossier clinique ATPE â€” ${safePatient.code}`, { size: 20, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
-  write(`Export serveur PDF descriptif sans recommandation automatisÃ©e`, { size: 10, color: [0.3, 0.35, 0.45], gap: 10 })
+  write(`Export serveur PDF descriptif sans recommandation automatisée`, { size: 10, color: [0.3, 0.35, 0.45], gap: 10 })
   write(`Initiales: ${safePatient.initials ?? 'â€”'} Â· Statut: ${safePatient.status} Â· Premier contact: ${safePatient.first_contact_on ?? 'â€”'}`, { size: 11, gap: 6 })
   if (episode) {
-    write(`Ã‰pisode: ${safeEpisode.episode_label} Â· ${safeEpisode.status}`, { size: 11, gap: 6 })
+    write(`Épisode: ${safeEpisode.episode_label} Â· ${safeEpisode.status}`, { size: 11, gap: 6 })
     if (safeEpisode.objectives_summary) write(`Objectifs: ${safeEpisode.objectives_summary}`, { size: 11, gap: 6 })
   }
 
   y -= 8
-  write('Timeline clinique multi-sÃ©ances', { size: 15, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
+  write('Timeline clinique multi-séances', { size: 15, bold: true, color: [0.11, 0.21, 0.55], gap: 8 })
 
   for (const session of ((sessions ?? []) as any[])) {
-    write(`SÃ©ance ${session.session_number} â€” ${session.session_date}`, { size: 12, bold: true, gap: 4 })
-    write(`Cadre ${session.setting_type} Â· MÃ©diation ${session.mediation_type} Â· QualitÃ© du cadre ${session.frame_quality}`, { size: 10, color: [0.3, 0.35, 0.45], gap: 4 })
-    write(`Ã‰motion ${session.emotional_score}/10 Â· Corps ${session.body_score}/10 Â· Conscience ${session.awareness_score}/10 Â· Dynamique ${session.dynamic_score}/10 Â· Symbolique ${session.symbolic_score}/10 Â· RÃ©gulation ${session.regulation_score}/10 Â· Engagement ${session.engagement_score}/10`, { size: 10, gap: 4 })
-    if (session.clinical_summary) write(`RÃ©sumÃ© clinique: ${session.clinical_summary}`, { size: 10, gap: 4 })
+    write(`Séance ${session.session_number} â€” ${session.session_date}`, { size: 12, bold: true, gap: 4 })
+    write(`Cadre ${session.setting_type} Â· Médiation ${session.mediation_type} Â· Qualité du cadre ${session.frame_quality}`, { size: 10, color: [0.3, 0.35, 0.45], gap: 4 })
+    write(`Émotion ${session.emotional_score}/10 Â· Corps ${session.body_score}/10 Â· Conscience ${session.awareness_score}/10 Â· Dynamique ${session.dynamic_score}/10 Â· Symbolique ${session.symbolic_score}/10 Â· Régulation ${session.regulation_score}/10 Â· Engagement ${session.engagement_score}/10`, { size: 10, gap: 4 })
+    if (session.clinical_summary) write(`Résumé clinique: ${session.clinical_summary}`, { size: 10, gap: 4 })
     if (session.note) write(`Note libre: ${session.note}`, { size: 10, gap: 4 })
-    if (session.therapist_hypothesis) write(`HypothÃ¨se thÃ©rapeute: ${session.therapist_hypothesis}`, { size: 10, gap: 6 })
+    if (session.therapist_hypothesis) write(`Hypothèse thérapeute: ${session.therapist_hypothesis}`, { size: 10, gap: 6 })
     y -= 6
   }
 

@@ -815,14 +815,18 @@ if (!linked?.patientId || !linked?.episodeId) {
         continue
       }
 
-      const linked =
-        patientByCode.get(record.patientCode) ??
-        (patientsForLinked ?? []).find((item: any) => item.code === record.patientCode)
+      if (!record.patientCode) {
+  throw new Error('Code patient manquant pour le consentement.')
+}
 
-      const patientId = linked?.patientId ?? linked?.id
-      if (!patientId) {
-        throw new Error('Patient lié introuvable pour le consentement.')
-      }
+const linked =
+  patientByCode.get(record.patientCode) ??
+  (patientsForLinked ?? []).find((item: any) => item.code === record.patientCode)
+
+const patientId = linked?.patientId ?? linked?.id
+if (!patientId) {
+  throw new Error('Patient lié introuvable pour le consentement.')
+}
 
       const existing = await db
         .from('patient_consents')

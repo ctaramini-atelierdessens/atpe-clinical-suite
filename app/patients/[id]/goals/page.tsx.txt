@@ -23,8 +23,8 @@ export default async function PatientGoalsPage({ params }: { params: Promise<{ i
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm text-slate-500">Patient</p>
-          <h1 className="text-3xl font-semibold tracking-tight">Objectifs thérapeutiques â€” {(patient as any).code}</h1>
-          {episode ? <p className="mt-2 text-sm text-slate-500">Épisode : {(episode as any).episode_label}</p> : null}
+          <h1 className="text-3xl font-semibold tracking-tight">Objectifs thérapeutiques â€” {patient.code}</h1>
+          {episode ? <p className="mt-2 text-sm text-slate-500">Épisode : {episode.episode_label}</p> : null}
         </div>
         <Link href={`/patients/${id}`} className="rounded-2xl border border-slate-300 px-4 py-2 font-medium text-slate-700">
           Retour dossier
@@ -52,9 +52,6 @@ export default async function PatientGoalsPage({ params }: { params: Promise<{ i
     </div>
   )
 }
-
-
-
 
 
 

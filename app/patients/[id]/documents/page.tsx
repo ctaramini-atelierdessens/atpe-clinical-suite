@@ -50,7 +50,7 @@ const safePatient = patient as any
 
       <DocumentUploadForm patientId={id} />
 
-      <SectionCard title="Documents du dossier" description="Inventaire des fichiers stockÃ©s dans le bucket sÃ©curisÃ©.">
+      <SectionCard title="Documents du dossier" description="Inventaire des fichiers stockés dans le bucket sécurisé.">
         <DocumentVaultList items={(documents ?? []) as any} />
       </SectionCard>
     </div>
