@@ -1,0 +1,10 @@
+create table if not exists atpe_global_alerts (
+  id uuid primary key default gen_random_uuid(),
+  organization_id uuid,
+  patient_id uuid,
+  alert_type text not null,
+  severity text not null,
+  title text not null,
+  message text not null,
+  created_at timestamptz not null default now()
+);

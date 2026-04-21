@@ -1,0 +1,20 @@
+create table if not exists atpe_session_versions (
+  id uuid primary key default gen_random_uuid(),
+  session_id uuid not null,
+  patient_id uuid not null,
+  version_number integer not null,
+  snapshot jsonb not null,
+  clinical_summary_text text,
+  composite_score numeric,
+  profile text,
+  prediction_trend text,
+  signed_by text,
+  signed_at timestamptz,
+  is_locked boolean not null default false,
+  pdf_locked boolean not null default false,
+  hash text,
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists atpe_session_versions_unique_idx
+  on atpe_session_versions(session_id, version_number);

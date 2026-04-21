@@ -1,60 +1,87 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
-import { createClient } from '@/lib/supabase/browser'
+import { useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
+
+function getClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !key) {
+    throw new Error('Variables Supabase client manquantes.')
+  }
+
+  return createClient(url, key)
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
     setLoading(true)
     setMessage(null)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+    try {
+      const supabase = getClient()
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    setLoading(false)
-    setMessage(error ? error.message : 'Lien magique envoyé. Vérifie ta boîte mail.')
+      if (error) throw error
+
+      window.location.href = '/'
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : 'Connexion impossible.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div className="mx-auto max-w-md">
-      <div className="card p-8">
-        <h1 className="text-2xl font-semibold">Connexion</h1>
-        <p className="mt-2 text-sm text-slate-500">Connexion par lien magique Supabase.</p>
+    <main className="mx-auto flex min-h-[70vh] max-w-md items-center">
+      <div className="w-full rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+        <h1 className="text-2xl font-bold text-slate-900">Connexion clinique</h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Accès thérapeute, superviseur ou administrateur.
+        </p>
+
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <div>
-            <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-700">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none ring-brand-300 transition focus:ring"
-              placeholder="toi@domaine.fr"
-            />
-          </div>
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            type="password"
+            placeholder="Mot de passe"
+            className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-brand-600 px-4 py-3 font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
+            className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
           >
-            {loading ? 'Envoi…' : 'Recevoir un lien de connexion'}
+            {loading ? 'Connexion…' : 'Se connecter'}
           </button>
         </form>
-        {message ? <p className="mt-4 text-sm text-slate-600">{message}</p> : null}
+
+        {message ? (
+          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {message}
+          </div>
+        ) : null}
       </div>
-    </div>
+    </main>
   )
 }

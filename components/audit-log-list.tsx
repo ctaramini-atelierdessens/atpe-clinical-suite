@@ -1,42 +1,162 @@
-import type { Database, Json } from '@/types/database'
+import type { Database } from '@/lib/database.types'
 
 type AuditLog = Database['public']['Tables']['audit_logs']['Row']
 
-function renderMetadata(metadata: Json) {
-  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) return null
-  const entries = Object.entries(metadata as Record<string, Json>)
-  if (!entries.length) return null
-  return (
-    <dl className="mt-2 grid gap-1 text-xs text-slate-500 md:grid-cols-2">
-      {entries.map(([key, value]) => (
-        <div key={key} className="rounded-xl bg-slate-50 px-2 py-1">
-          <dt className="font-medium text-slate-600">{key}</dt>
-          <dd>{String(value)}</dd>
-        </div>
-      ))}
-    </dl>
-  )
+function asArray<T>(value: T[] | null | undefined): T[] {
+  return Array.isArray(value) ? value : []
 }
 
-export function AuditLogList({ items }: { items: AuditLog[] }) {
+function formatDate(value: string | null | undefined) {
+  if (!value) return 'Date inconnue'
+
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return 'Date invalide'
+
+  return new Intl.DateTimeFormat('fr-FR', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date)
+}
+
+function pickString(
+  item: Record<string, unknown>,
+  keys: string[],
+  fallback: string
+) {
+  for (const key of keys) {
+    const value = item[key]
+    if (typeof value === 'string' && value.trim()) {
+      return value
+    }
+  }
+  return fallback
+}
+
+function getLevelClasses(level: string) {
+  switch (level.toLowerCase()) {
+    case 'error':
+    case 'erreur':
+    case 'critical':
+    case 'critique':
+      return 'border-red-200 bg-red-50 text-red-900'
+    case 'warning':
+    case 'warn':
+    case 'alerte':
+      return 'border-amber-200 bg-amber-50 text-amber-900'
+    case 'info':
+    case 'information':
+      return 'border-blue-200 bg-blue-50 text-blue-900'
+    case 'success':
+    case 'ok':
+      return 'border-emerald-200 bg-emerald-50 text-emerald-900'
+    default:
+      return 'border-slate-200 bg-slate-50 text-slate-900'
+  }
+}
+
+type AuditLogListProps = {
+  items?: AuditLog[] | null
+}
+
+export function AuditLogList({ items }: AuditLogListProps) {
+  const safeItems = asArray(items)
+
+  if (safeItems.length === 0) {
+    return (
+      <div className="rounded-2xl border bg-white p-5 shadow-sm">
+        <p className="text-sm text-slate-500">
+          Aucun événement d’audit disponible.
+        </p>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-3">
-      {items.length ? (
-        items.map((item) => (
-          <div key={item.id} className="rounded-2xl border border-slate-200 p-4">
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span className="badge bg-brand-50 text-brand-700">{item.action}</span>
-              <span className="font-medium text-slate-800">{item.entity_type}</span>
-              <span className="text-slate-400">•</span>
-              <span className="text-slate-500">{new Date(item.created_at).toLocaleString('fr-FR')}</span>
+    <div className="grid gap-3">
+      {safeItems.map((item) => {
+        const record = item as Record<string, unknown>
+
+        const title = pickString(
+          record,
+          ['title', 'action', 'event', 'event_type', 'type'],
+          'Événement d’audit'
+        )
+
+        const actor = pickString(
+          record,
+          ['actor_name', 'user_name', 'clinician_name', 'performed_by'],
+          'Utilisateur inconnu'
+        )
+
+        const level = pickString(
+          record,
+          ['level', 'severity', 'priority'],
+          'info'
+        )
+
+        const description = pickString(
+          record,
+          ['description', 'details', 'message', 'notes'],
+          ''
+        )
+
+        const target = pickString(
+          record,
+          ['target', 'resource', 'entity', 'object_type'],
+          ''
+        )
+
+        const metadata = record.metadata
+
+        return (
+          <article
+            key={item.id}
+            className={`rounded-2xl border p-4 shadow-sm ${getLevelClasses(level)}`}
+          >
+            <div className="space-y-3">
+              <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold">{title}</h3>
+                  <p className="text-sm">
+                    <span className="font-medium">Auteur :</span> {actor}
+                  </p>
+                </div>
+
+                <div className="text-sm opacity-80">
+                  {formatDate(item.created_at)}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 text-xs">
+                <span className="rounded-full bg-white/70 px-3 py-1 font-medium">
+                  Niveau : {level}
+                </span>
+
+                {target ? (
+                  <span className="rounded-full bg-white/70 px-3 py-1 font-medium">
+                    Cible : {target}
+                  </span>
+                ) : null}
+              </div>
+
+              {description ? (
+                <p className="text-sm">{description}</p>
+              ) : null}
+
+              {metadata && typeof metadata === 'object' ? (
+                <details className="rounded-xl bg-white/70 p-3">
+                  <summary className="cursor-pointer text-sm font-medium">
+                    Métadonnées
+                  </summary>
+                  <pre className="mt-3 overflow-x-auto whitespace-pre-wrap break-words text-xs text-slate-700">
+                    {JSON.stringify(metadata, null, 2)}
+                  </pre>
+                </details>
+              ) : null}
             </div>
-            {item.entity_id ? <p className="mt-2 text-xs text-slate-500">Entity ID : {item.entity_id}</p> : null}
-            {renderMetadata(item.metadata)}
-          </div>
-        ))
-      ) : (
-        <div className="rounded-2xl border border-dashed border-slate-300 p-6 text-sm text-slate-500">Aucun audit log visible.</div>
-      )}
+          </article>
+        )
+      })}
     </div>
   )
 }

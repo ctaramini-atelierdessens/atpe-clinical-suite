@@ -1,26 +1,52 @@
-import { createServerClient } from '@supabase/ssr'
+import 'server-only'
+
 import { cookies } from 'next/headers'
-import type { Database } from '@/types/database'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import type { Database } from '@/lib/database.types'
+
+function getEnv(name: 'NEXT_PUBLIC_SUPABASE_URL' | 'NEXT_PUBLIC_SUPABASE_ANON_KEY') {
+  const value = process.env[name]
+
+  if (!value || value.trim().length === 0) {
+    throw new Error(`Variable d’environnement manquante : ${name}`)
+  }
+
+  return value
+}
 
 export async function createClient() {
   const cookieStore = await cookies()
 
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    getEnv('NEXT_PUBLIC_SUPABASE_URL'),
+    getEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll()
+        get(name: string) {
+          return cookieStore.get(name)?.value
         },
-        setAll(cookiesToSet) {
+
+        set(name: string, value: string, options: CookieOptions) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-          } catch {
-            // Server Components can ignore cookie writes during render.
-          }
+            cookieStore.set({
+              name,
+              value,
+              ...options,
+            })
+          } catch {}
+        },
+
+        remove(name: string, options: CookieOptions) {
+          try {
+            cookieStore.set({
+              name,
+              value: '',
+              ...options,
+              maxAge: 0,
+            })
+          } catch {}
         },
       },
-    },
+    }
   )
 }

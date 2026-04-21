@@ -1,0 +1,10 @@
+create table if not exists atpe_supervision_notes (
+  id uuid primary key default gen_random_uuid(),
+  patient_id uuid,
+  session_id uuid,
+  scope text not null default 'patient',
+  title text not null,
+  content text,
+  severity text,
+  created_at timestamptz not null default now()
+);

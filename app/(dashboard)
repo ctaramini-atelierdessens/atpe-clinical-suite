@@ -1,0 +1,216 @@
+import Link from 'next/link'
+
+import { resolveAtpeCase } from '@/features/atpe/services/resolve-atpe-case'
+
+import {
+  buildClinicalInsights,
+  predictClinicalRisk,
+  detectRelapse,
+  generateAdvancedRecommendations,
+} from '@/features/atpe/services/clinical-engine'
+
+import {
+  buildProjectionHistory,
+  projectNextSessions,
+} from '@/features/atpe/services/clinical-projection'
+
+import { generateMdphSummary } from '@/features/atpe/services/mdph-generator'
+
+import { PatientClinicalTabs } from '@/features/patients/components/PatientClinicalTabs'
+import { PatientPredictionChart } from '@/features/patients/components/PatientPredictionChart'
+
+/* =========================
+   TYPES
+========================= */
+
+type PageProps = {
+  params: Promise<{ id: string }>
+}
+
+/* =========================
+   UTILS
+========================= */
+
+function safe(value: unknown, fallback = '—') {
+  return value ?? fallback
+}
+
+function Card({
+  title,
+  value,
+}: {
+  title: string
+  value: unknown
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="text-xs text-slate-500">{title}</div>
+      <div className="mt-1 text-lg font-semibold text-slate-900">
+        {String(value)}
+      </div>
+    </div>
+  )
+}
+
+/* =========================
+   PAGE
+========================= */
+
+export default async function PatientPage({ params }: PageProps) {
+  const { id } = await params
+
+  const data = await resolveAtpeCase(id)
+
+  const patient = data.patient ?? {}
+  const sessions = Array.isArray(data.sessions) ? data.sessions : []
+  const alerts = Array.isArray(data.active_alerts)
+    ? data.active_alerts
+    : []
+
+  /* =========================
+     MOTEUR CLINIQUE
+  ========================= */
+
+  const insights = buildClinicalInsights(sessions, alerts)
+
+  /* =========================
+     PHASE 15 — PRÉDICTION
+  ========================= */
+
+  const prediction = predictClinicalRisk(sessions, alerts)
+  const relapse = detectRelapse(sessions)
+  const recommendations =
+    generateAdvancedRecommendations(sessions, alerts)
+
+  /* =========================
+     PHASE 16 — PROJECTION
+  ========================= */
+
+  const projection = projectNextSessions(sessions)
+  const history = buildProjectionHistory(sessions)
+
+  /* =========================
+     MDPH
+  ========================= */
+
+  const mdphSummary = generateMdphSummary(patient, insights)
+
+  /* =========================
+     RENDER
+  ========================= */
+
+  return (
+    <main className="min-h-screen bg-slate-100 p-6">
+      <div className="mx-auto max-w-7xl space-y-6">
+        {/* ================= HEADER ================= */}
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-slate-900">
+                {safe((patient as any).display_name, 'Patient')}
+              </h1>
+
+              <div className="mt-2 text-sm text-slate-500">
+                ID : {id}
+              </div>
+            </div>
+
+            {/* EXPORTS */}
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href={`/api/report/pdf?patientId=${id}`}
+                className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+              >
+                📄 PDF
+              </Link>
+
+              <Link
+                href={`/api/report/docx?patientId=${id}`}
+                className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-100"
+              >
+                📝 Word
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ================= SCORE ================= */}
+
+        <section className="grid gap-4 md:grid-cols-4">
+          <Card title="Score" value={insights.score} />
+          <Card title="Tendance" value={insights.trend} />
+          <Card title="Risque" value={insights.risk} />
+          <Card title="Lecture" value={insights.label} />
+        </section>
+
+        {/* ================= PRÉDICTION ================= */}
+
+        <section className="grid gap-4 md:grid-cols-2">
+          <Card title="Prédiction" value={prediction.message} />
+
+          <Card
+            title="Rechute"
+            value={relapse ? '⚠️ Rechute détectée' : 'Stable'}
+          />
+        </section>
+
+        {/* ================= PROJECTION ================= */}
+
+        <PatientPredictionChart
+          history={history}
+          projection={projection.points}
+        />
+
+        <div className="text-sm text-slate-600">
+          {projection.message}
+        </div>
+
+        {/* ================= RECOMMANDATIONS ================= */}
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Recommandations avancées
+          </h2>
+
+          <ul className="mt-3 space-y-1 text-sm text-slate-700">
+            {recommendations.length > 0 ? (
+              recommendations.map((rec, i) => (
+                <li key={i}>• {rec}</li>
+              ))
+            ) : (
+              <li>Aucune recommandation</li>
+            )}
+          </ul>
+        </section>
+
+        {/* ================= MDPH ================= */}
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Synthèse automatique MDPH
+          </h2>
+
+          <pre className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700">
+            {mdphSummary}
+          </pre>
+        </section>
+
+        {/* ================= TABS ================= */}
+
+        <PatientClinicalTabs
+          sessions={sessions}
+          overview={data.overview}
+          expressionAssessment={data.expression_assessment}
+          protocols={data.protocols ?? []}
+          protocolExecution={data.protocol_execution ?? []}
+          goals={data.goals ?? []}
+          goalReviews={data.goal_reviews ?? []}
+          alerts={alerts}
+          caseData={data.case ?? {}}
+          clinicalInsights={insights}
+        />
+      </div>
+    </main>
+  )
+}
