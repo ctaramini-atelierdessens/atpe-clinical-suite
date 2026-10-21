@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { AppNavigation } from '@/components/app-navigation'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   title: 'ATPE Clinical Suite',
@@ -22,6 +23,7 @@ export default function RootLayout({
 
           <div className="min-w-0">{children}</div>
         </div>
+        <Analytics />
       </body>
     </html>
   )
